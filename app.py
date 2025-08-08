@@ -256,7 +256,7 @@ elif menu == "📈 Estadísticas":
         ## ---------------------------
         ## 1. Gráfico de duración por hábito
         ## ---------------------------
-        resumen_duracion = df_semana.groupby(["Día", "Hábito"],observed=False)["Duración (min)"].sum().reset_index()
+        resumen_duracion = df_semana.groupby(["Día", "Hábito"],observed=True)["Duración (min)"].sum().reset_index()
         resumen_duracion = resumen_duracion.sort_values("Día")
 
         st.subheader("⏱️ Tiempo invertido por hábito (últimos 7 días)")
