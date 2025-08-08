@@ -204,6 +204,7 @@ elif menu == "⚙️ Objetivos":
     if st.button("Agregar hábito"):
         if nuevo_obj.strip():
             nuevos_objetivos.append(nuevo_obj.strip())
+            st.rerun()
             st.success(f"✅ Hábito agregado: {nuevo_obj.strip()}")
             
 
@@ -211,6 +212,7 @@ elif menu == "⚙️ Objetivos":
     if st.button("💾 Guardar cambios"):
         with open("habitos.json", "w") as f:
             json.dump(nuevos_objetivos, f, indent=4)
+            st.rerun()
             # Detectar cambios de nombre de hábitos
     if len(nuevos_objetivos) == len(objetivos):
         cambios = {old: new for old, new in zip(objetivos, nuevos_objetivos) if old != new}
@@ -225,8 +227,8 @@ elif menu == "⚙️ Objetivos":
             df_detalle.to_csv("registro_detallado.csv", index=False)
         st.success("✅ Objetivos actualizados con éxito")
     
-    if st.button("💾 Guardar cambios") or st.button("Agregar hábito"):
-        st.rerun()
+
+        
 
 
 # Sección: Estadísticas
