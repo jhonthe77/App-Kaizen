@@ -179,15 +179,17 @@ elif menu == "🔁 Revisión Semanal":
 elif menu == "⚙️ Objetivos":
     st.header("⚙️ Configuración de Objetivos Kaizen")
 
-    # Leer objetivos actuales
-    if os.path.exists("habitos.json"):
-        with open("habitos.json", "r") as f:
-            objetivos = json.load(f)
-    else:
-        objetivos = []
+    # Cargar objetivos en session_state si no existen
+    if "objetivos" not in st.session_state:
+        if os.path.exists("habitos.json"):
+            with open("habitos.json", "r") as f:
+                st.session_state.objetivos = json.load(f)
+        else:
+            st.session_state.objetivos = []
+
+    objetivos = st.session_state.objetivos
 
     st.subheader("📝 Editar o Eliminar Objetivos Existentes")
-
     nuevos_objetivos = []
     for i, objetivo in enumerate(objetivos):
         col1, col2, col3 = st.columns([5, 1, 1])
@@ -198,38 +200,32 @@ elif menu == "⚙️ Objetivos":
         if not eliminar and nuevo_nombre.strip() != "":
             nuevos_objetivos.append(nuevo_nombre.strip())
 
-    # Agregar nuevos hábitos
     st.subheader("➕ Agregar nuevos objetivos")
     nuevo_obj = st.text_input("Escribe un nuevo hábito", key="nuevo_obj")
     if st.button("Agregar hábito"):
         if nuevo_obj.strip():
             nuevos_objetivos.append(nuevo_obj.strip())
-           
+            st.session_state.objetivos = nuevos_objetivos
+            with open("habitos.json", "w") as f:
+                json.dump(st.session_state.objetivos, f, indent=4)
             st.success(f"✅ Hábito agregado: {nuevo_obj.strip()}")
-            st.experimental_rerun()
 
-    # Guardar cambios
     if st.button("💾 Guardar cambios"):
+        # Guardar en JSON
+        st.session_state.objetivos = nuevos_objetivos
         with open("habitos.json", "w") as f:
-            json.dump(nuevos_objetivos, f, indent=4)
-         
-            # Detectar cambios de nombre de hábitos
-    if len(nuevos_objetivos) == len(objetivos):
-        cambios = {old: new for old, new in zip(objetivos, nuevos_objetivos) if old != new}
+            json.dump(st.session_state.objetivos, f, indent=4)
 
+        # Detectar cambios de nombre de hábitos
+        cambios = {old: new for old, new in zip(objetivos, nuevos_objetivos) if old != new}
         if cambios and os.path.exists("registro_detallado.csv"):
             df_detalle = pd.read_csv("registro_detallado.csv")
-
-            # Cambiar nombre del hábito en el CSV
             for antiguo, nuevo in cambios.items():
                 df_detalle["Hábito"] = df_detalle["Hábito"].replace(antiguo, nuevo)
-
             df_detalle.to_csv("registro_detallado.csv", index=False)
-        st.success("✅ Objetivos actualizados con éxito")
-        st.rerun()
-    
 
-        
+        st.success("✅ Objetivos actualizados con éxito")
+   
 
 
 # Sección: Estadísticas
