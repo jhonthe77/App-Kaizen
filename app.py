@@ -279,7 +279,7 @@ elif menu == "📈 Estadísticas":
                 plot_bgcolor="rgba(0,0,0,0)"
             )
             fig_duracion.update_traces(textposition="outside")
-            max_val = df["Duración (min)"].unique().max()
+            max_val = df["Duración (min)"].max()
             fig_duracion.update_yaxes(range=[0, max_val * 1.5])
             st.plotly_chart(fig_duracion, use_container_width=True)
 
@@ -305,6 +305,6 @@ elif menu == "📈 Estadísticas":
                 plot_bgcolor="rgba(0,0,0,0)"
             )
             fig_actividades.update_traces(textposition="outside")
-            max_val = df["Hábito"].nunique()
+            max_val = df["Hábito"].count()
             fig_actividades.update_yaxes(range=[0, max_val * 1.5])
             st.plotly_chart(fig_actividades, use_container_width=True)
