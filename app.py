@@ -8,7 +8,9 @@ import random
 from datetime import datetime, timedelta
 
 
+from zoneinfo import ZoneInfo
 
+fecha_bogota = datetime.now(ZoneInfo("America/Bogota"))
 
 # Lista de frases motivacionales
 frases_motivacionales = [
@@ -23,6 +25,7 @@ frases_motivacionales = [
     "🧭 No te compares, solo asegúrate de ser mejor que ayer.",
     "🎯 La mejora continua no tiene fin, y ese es su poder."
 ]
+
 
 
 
@@ -277,6 +280,8 @@ elif menu == "📈 Estadísticas":
                 plot_bgcolor="rgba(0,0,0,0)"
             )
             fig_duracion.update_traces(textposition="outside")
+            max_val = df["Duración (min)"].max()
+            fig_duracion.update_yaxes(range=[0, max_val * 2.9])
             st.plotly_chart(fig_duracion, use_container_width=True)
 
         with tab2:
@@ -296,7 +301,7 @@ elif menu == "📈 Estadísticas":
                 color_discrete_sequence=px.colors.qualitative.Set2
             )
             fig_actividades.update_layout(
-                margin=dict(t=50, b=30, l=30, r=30),
+                margin=dict(t=70, b=30, l=30, r=30),
                 legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
                 plot_bgcolor="rgba(0,0,0,0)"
             )
