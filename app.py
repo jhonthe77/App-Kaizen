@@ -306,4 +306,6 @@ elif menu == "📈 Estadísticas":
                 plot_bgcolor="rgba(0,0,0,0)"
             )
             fig_actividades.update_traces(textposition="outside")
+            max_val = df["Hábito"].count()
+            fig_actividades.update_yaxes(range=[0, max_val * 1])
             st.plotly_chart(fig_actividades, use_container_width=True)
