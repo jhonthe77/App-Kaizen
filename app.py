@@ -7,10 +7,11 @@ import json
 import random
 from datetime import datetime, timedelta
 
+import pytz
 
-from zoneinfo import ZoneInfo
-
-fecha_bogota = datetime.now(ZoneInfo("America/Bogota"))
+# Zona horaria Bogotá
+zona_bogota = pytz.timezone("America/Bogota")
+fecha_bogota = datetime.now(zona_bogota)
 
 # Lista de frases motivacionales
 frases_motivacionales = [
