@@ -248,52 +248,57 @@ elif menu == "📈 Estadísticas":
     if df_semana.empty:
         st.info("No hay datos de los últimos 7 días.")
     else:
-        df_semana["Día"] = df_semana["Fecha"].dt.strftime("%a")  # Ej: 'Mon', 'Tue', etc.
-
-        # Ordenar días correctamente
+        df_semana["Día"] = df_semana["Fecha"].dt.strftime("%a")
         dias_orden = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         df_semana["Día"] = pd.Categorical(df_semana["Día"], categories=dias_orden, ordered=True)
 
-        ## ---------------------------
-        ## 1. Gráfico de duración por hábito
-        ## ---------------------------
-        resumen_duracion = df_semana.groupby(["Día", "Hábito"],observed=True)["Duración (min)"].sum().reset_index()
-        resumen_duracion = resumen_duracion.sort_values("Día")
+        # Crear tabs
+        tab1, tab2 = st.tabs(["⏱️ Tiempo por hábito", "🔢 Actividades por día"])
 
-        st.subheader("⏱️ Tiempo invertido por hábito (últimos 7 días)")
-        fig_duracion = px.bar(
-            resumen_duracion,
-            x="Día",
-            y="Duración (min)",
-            color="Hábito",
-            text="Duración (min)",
-            barmode="group",
-            title="Duración total por hábito y día",
-            labels={"Día": "Día de la semana", "Duración (min)": "Minutos"},
-            height=450,
-        )
-        fig_duracion.update_layout(margin=dict(t=60, b=40, l=40, r=40))
-        fig_duracion.update_traces(textposition="outside")
-        st.plotly_chart(fig_duracion, use_container_width=True)
+        with tab1:
+            resumen_duracion = df_semana.groupby(["Día", "Hábito"], observed=True)["Duración (min)"].sum().reset_index()
+            resumen_duracion = resumen_duracion.sort_values("Día")
 
-        ## ---------------------------
-        ## 2. Gráfico de número de actividades por día
-        ## ---------------------------
-        resumen_actividades = df_semana.groupby(["Día", "Hábito"]).size().reset_index(name="Actividades")
-        resumen_actividades = resumen_actividades.sort_values("Día")
+            fig_duracion = px.bar(
+                resumen_duracion,
+                x="Día",
+                y="Duración (min)",
+                color="Hábito",
+                text="Duración (min)",
+                barmode="group",
+                title="Duración total por hábito (últimos 7 días)",
+                labels={"Día": "Día", "Duración (min)": "Minutos"},
+                height=420,
+                color_discrete_sequence=px.colors.qualitative.Set2
+            )
+            fig_duracion.update_layout(
+                margin=dict(t=50, b=30, l=30, r=30),
+                legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
+                plot_bgcolor="rgba(0,0,0,0)"
+            )
+            fig_duracion.update_traces(textposition="outside")
+            st.plotly_chart(fig_duracion, use_container_width=True)
 
-        st.subheader("🔢 Número de actividades por día (últimos 7 días)")
-        fig_actividades = px.bar(
-            resumen_actividades,
-            x="Día",
-            y="Actividades",
-            text="Actividades",
-            color="Hábito",
-            barmode="group",
-            title="Total de actividades registradas por día",
-            labels={"Día": "Día de la semana", "Actividades": "Cantidad"},
-            height=450
-        )
-        fig_actividades.update_layout(margin=dict(t=60, b=40, l=40, r=40))
-        fig_actividades.update_traces(textposition="outside")
-        st.plotly_chart(fig_actividades, use_container_width=True)
+        with tab2:
+            resumen_actividades = df_semana.groupby(["Día", "Hábito"]).size().reset_index(name="Actividades")
+            resumen_actividades = resumen_actividades.sort_values("Día")
+
+            fig_actividades = px.bar(
+                resumen_actividades,
+                x="Día",
+                y="Actividades",
+                text="Actividades",
+                color="Hábito",
+                barmode="group",
+                title="Número de actividades registradas (últimos 7 días)",
+                labels={"Día": "Día", "Actividades": "Cantidad"},
+                height=420,
+                color_discrete_sequence=px.colors.qualitative.Set2
+            )
+            fig_actividades.update_layout(
+                margin=dict(t=50, b=30, l=30, r=30),
+                legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
+                plot_bgcolor="rgba(0,0,0,0)"
+            )
+            fig_actividades.update_traces(textposition="outside")
+            st.plotly_chart(fig_actividades, use_container_width=True)
