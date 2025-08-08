@@ -69,7 +69,7 @@ if menu == "🏠 Inicio":
 
 # Sección: Registro Diario
 elif menu == "✅ Registro Diario":
-    st.header("Registro Diario de Hábitos con Inicio y Fin ⏱️ (hora Bogotá)")
+    st.header("Registro Diario de Hábitos con Inicio y Fin ⏱️")
 
     # Cargar hábitos personalizados
     habitos_file = "habitos.json"
