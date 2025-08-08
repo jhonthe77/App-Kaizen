@@ -8,10 +8,7 @@ import random
 from datetime import datetime, timedelta
 
 import pytz
-
-# Zona horaria Bogotá
-zona_bogota = pytz.timezone("America/Bogota")
-fecha_bogota = datetime.now(zona_bogota)
+BOGOTA = pytz.timezone("America/Bogota")
 
 # Lista de frases motivacionales
 frases_motivacionales = [
@@ -72,7 +69,7 @@ if menu == "🏠 Inicio":
 
 # Sección: Registro Diario
 elif menu == "✅ Registro Diario":
-    st.header("Registro Diario de Hábitos con Inicio y Fin ⏱️")
+    st.header("Registro Diario de Hábitos con Inicio y Fin ⏱️ (hora Bogotá)")
 
     # Cargar hábitos personalizados
     habitos_file = "habitos.json"
@@ -83,7 +80,7 @@ elif menu == "✅ Registro Diario":
         st.warning("No hay hábitos configurados aún. Ve a ⚙️ Objetivos para agregarlos.")
         st.stop()
 
-    # Inicializar estado de sesión por hábito
+    # Inicializar estado de sesión por hábito (si no existe)
     for habit in habits:
         if f"{habit}_start" not in st.session_state:
             st.session_state[f"{habit}_start"] = None
@@ -91,27 +88,27 @@ elif menu == "✅ Registro Diario":
     # Mostrar hábitos con botones de inicio y fin
     for habit in habits:
         col1, col2, col3 = st.columns([3, 2, 2])
-
         with col1:
             st.markdown(f"### {habit}")
-        
+
         with col2:
             if st.session_state[f"{habit}_start"] is None:
-                if st.button(f"🟢 Iniciar", key=f"start_{habit}"):
-                    st.session_state[f"{habit}_start"] = datetime.now()
+                if st.button("🟢 Iniciar", key=f"start_{habit}"):
+                    # hora con zona de Bogota
+                    st.session_state[f"{habit}_start"] = datetime.now(BOGOTA)
             else:
-                st.markdown(f"🕒 Inicio: {st.session_state[f'{habit}_start'].strftime('%H:%M:%S')}")
+                inicio = st.session_state[f"{habit}_start"]
+                st.markdown(f"🕒 Inicio: {inicio.strftime('%H:%M:%S')} (Bogotá)")
 
         with col3:
             if st.session_state[f"{habit}_start"] is not None:
-                if st.button(f"🔴 Finalizar", key=f"end_{habit}"):
-                    hora_inicio = st.session_state[f"{habit}_start"]
-                    hora_fin = datetime.now()
+                if st.button("🔴 Finalizar", key=f"end_{habit}"):
+                    hora_inicio = st.session_state[f"{habit}_start"]            # tz-aware (Bogotá)
+                    hora_fin = datetime.now(BOGOTA)                            # tz-aware (Bogotá)
                     duracion = round((hora_fin - hora_inicio).total_seconds() / 60, 2)
 
-                    # Guardar en CSV
                     fila = {
-                        "Fecha": datetime.today().date().isoformat(),
+                        "Fecha": hora_fin.date().isoformat(),                    # YYYY-MM-DD en zona Bogotá
                         "Hábito": habit,
                         "Hora Inicio": hora_inicio.strftime('%H:%M:%S'),
                         "Hora Fin": hora_fin.strftime('%H:%M:%S'),
@@ -129,6 +126,7 @@ elif menu == "✅ Registro Diario":
 
                     st.success(f"✅ '{habit}' registrado: {duracion} min")
                     st.session_state[f"{habit}_start"] = None
+
 
 # Sección: Revisión Semanal
 elif menu == "🔁 Revisión Semanal":
@@ -308,5 +306,5 @@ elif menu == "📈 Estadísticas":
             )
             fig_actividades.update_traces(textposition="outside")
             max_val = df["Hábito"].count()
-            fig_actividades.update_yaxes(range=[0, max_val * 1])
+            fig_actividades.update_yaxes(range=[0, max_val * 1.5])
             st.plotly_chart(fig_actividades, use_container_width=True)
