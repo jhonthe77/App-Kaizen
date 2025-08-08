@@ -306,5 +306,5 @@ elif menu == "📈 Estadísticas":
             )
             fig_actividades.update_traces(textposition="outside")
             max_val = df["Hábito"].count()
-            fig_actividades.update_yaxes(range=[0, max_val -(max_val * 0.99)])  # Ajustar rango para mejor visualización
+            fig_actividades.update_yaxes(range=[0, max_val -(max_val * 0.1)])  # Ajustar rango para mejor visualización
             st.plotly_chart(fig_actividades, use_container_width=True)
