@@ -206,7 +206,7 @@ elif menu == "⚙️ Objetivos":
             nuevos_objetivos.append(nuevo_obj.strip())
            
             st.success(f"✅ Hábito agregado: {nuevo_obj.strip()}")
-            
+            st.experimental_rerun()
 
     # Guardar cambios
     if st.button("💾 Guardar cambios"):
@@ -226,6 +226,7 @@ elif menu == "⚙️ Objetivos":
 
             df_detalle.to_csv("registro_detallado.csv", index=False)
         st.success("✅ Objetivos actualizados con éxito")
+        st.rerun()
     
 
         
