@@ -279,7 +279,7 @@ elif menu == "📈 Estadísticas":
         ## ---------------------------
         ## 2. Gráfico de número de actividades por día
         ## ---------------------------
-        resumen_actividades = df_semana.groupby("Día").size().reset_index(name="Actividades")
+        resumen_actividades = df_semana.groupby(["Día", "Hábito"]).size().reset_index(name="Actividades")
         resumen_actividades = resumen_actividades.sort_values("Día")
 
         st.subheader("🔢 Número de actividades por día (últimos 7 días)")
@@ -288,6 +288,8 @@ elif menu == "📈 Estadísticas":
             x="Día",
             y="Actividades",
             text="Actividades",
+            color="Hábito",
+            barmode="group",
             title="Total de actividades registradas por día",
             labels={"Día": "Día de la semana", "Actividades": "Cantidad"},
             height=450
