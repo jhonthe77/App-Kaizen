@@ -328,7 +328,13 @@ elif menu == "📈 Estadísticas":
             plot_bgcolor="rgba(0,0,0,0)"
         )
         fig_actividades.update_traces(textposition="outside")
-        max_val = df_filtrado["Hábito"].count()
-        fig_actividades.update_yaxes(range=[0, max_val - (max_val * 0.1)])
+        # Valor máximo real del eje Y
+        max_val = resumen_actividades["Actividades"].max()
+
+        # Ajustar rango para que haya espacio arriba y se vea el texto
+        fig_actividades.update_yaxes(range=[0, max_val * 1.2])
+
+        # Mostrar gráfico
         st.plotly_chart(fig_actividades, use_container_width=True)
+
 
